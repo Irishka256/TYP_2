@@ -107,7 +107,7 @@ bool tree::sem_var_declared(char *id, int line){
 		std::cout<<"Идентификатор не объявлен: "<<id<<" в строке "<<line<<std::endl;
 		return false;
 	}else if (fnup->n->is_type){
-		std::cout<<"Не является переменной: "<<id<<" в строке "<<line<<std::endl;
+		//std::cout<<"Не является переменной: "<<id<<" в строке "<<line<<std::endl;
 		return false;
 	}
 	return true;

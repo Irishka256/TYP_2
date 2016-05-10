@@ -228,6 +228,7 @@ void TDiagram::MS(){
 		if (flagInt){
 			if (!pt->sem_override(l, str = sc->GetStroka())){
 				pt = pt->sem_add_type(l, typebuf);
+				std::cout << "Объявлена переменная " << l << std::endl;
 				flag = true;
 			}
 		}
@@ -1107,6 +1108,7 @@ void TDiagram::I(){
 	//if
 	TypeLex l; int t, uk1, str;
  	t=sc->Scaner(l);
+	int locFlagInt = flagInt;
 	if (t!=TIf) 
 		sc->PrintError("Ожидался if",l);
 	t=sc->Scaner(l);
@@ -1115,6 +1117,8 @@ void TDiagram::I(){
 	int VyrType;
 	TVal VyrVal;
 	V(&VyrType, &VyrVal);
+	if (flagInt && (VyrVal.datAsInt != 0)) flagInt = 1;
+	else flagInt = 0;
 	/*if (flagInt){
 		if (VyrType == TypeInt){
 			value->datAsInt = VyrVal.datAsInt;
@@ -1127,13 +1131,16 @@ void TDiagram::I(){
 	if (t!=TRSkob) 
 		sc->PrintError("Ожидался символ )",l);
 	O1();
+	if (locFlagInt) flagInt = 1 - flagInt;
 	uk1=sc->GetUK(); str=sc->GetStroka(); t=sc->Scaner(l);
 	if(t==TElse){
 		O1();
 	}
 	else {sc->PutUK(uk1);
 	sc->PutStroka(str);}
+	flagInt = locFlagInt;
 	/*uk1=sc->GetUK(); 
+
 	str=sc->GetStroka();
 	t=sc->Scaner(l); 
 	sc->PutUK(uk1);
