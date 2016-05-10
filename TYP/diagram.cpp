@@ -973,12 +973,23 @@ void TDiagram::V3(int *type, TVal *value){
 			int dif = 0;
 			if (flagInt) {
 				for (int i = 0; i<rank; i++){
-					if (VarHg[i] >= VarTree->n->hg[i]){
+					/*if (VarHg[i] >= VarTree->n->hg[i]){
 						sc->PrintError("Размер массива превышен в строке ", l);
 						//std::cout << "размер массива превышен в строке " << (sc->lines[sc->GetUK()]) << std::endl; throw 0;
-					}
+					}*/
 					if (i > 0) dif *= VarTree->n->hg[i - 1];
 					dif += VarHg[i];
+				}
+			}
+
+			if (flagInt){
+				if (VarTree->n->type == TypeInt){
+					*type = TypeInt;
+					if (flagInt) value->datAsInt = (VarTree->n->value + dif)->datAsInt;
+				}
+				else if (VarTree->n->type == TypeDouble){
+					*type = TypeDouble;
+					if (flagInt) value->datAsDouble = (VarTree->n->value + dif)->datAsDouble;
 				}
 			}
 			/*    // это у Миши есть, но связано с add, а это ++ и --, надо проверить!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
