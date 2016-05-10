@@ -1,7 +1,4 @@
-int asd = 100;
-double popi = asd * 3 / 5;
-int q;
 void main(){
-	int w;
-	q = asd * popi;
+	int ee[2][4];
+	ee[2][4] = 3;
 }

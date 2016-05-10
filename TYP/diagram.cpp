@@ -43,6 +43,7 @@ void TDiagram::HelpForOP(char *type){
 		bool flag = false;
 
 		t=sc->Scaner(l);
+
 		if (t!=TIdent) 
 			sc->PrintError("Ожидался идентификатор",l);
 		else{
@@ -50,12 +51,12 @@ void TDiagram::HelpForOP(char *type){
 				if (!pt->sem_override(l, str = sc->GetStroka())){
 					pt = pt->sem_add_var(l, type);
 					std::cout << "Объявлена переменная " << l << std::endl;
-					//flag = true;//////////////////// для N      мб надо?????????????????
+					flag = true;//////////////////// для N     
 				}
 			}
 		}
 
-		if (flag) pt->sem_set_dim(atoi(l),str=sc->GetStroka());
+		//if (flag) pt->sem_set_dim(atoi(l),str=sc->GetStroka());
 
 		uk1=sc->GetUK(); str=sc->GetStroka(); t=sc->Scaner(l);
 		if(t==TPris){
@@ -436,19 +437,27 @@ void TDiagram::PR(){
 
 
 		int dif = 0;
+		bool fl;
 		if (flagInt){
-			pt->sem_arr_rank(varname, rank, str = sc->GetStroka());    //у Миши используется, а у меня нет, поэтому хз надо ли
-			//У ОПИСАНИИ ТОГДА РАССКОМЕНТИРОВАТЬ ДЛЯ N
-			for (int i = 0; i<rank; i++){
-				if (VarHg[i] >= VarTree->n->hg[i]){
-					sc->PrintError("Размер массива превышен в строке ", l);
-					//std::cout << "Размер массива превышен в строке " << (sc->lines[sc->GetUK()]) << std::endl; throw 0;
-				}
-				if (i > 0) dif *= VarTree->n->hg[i - 1];
-				dif += VarHg[i];
+			fl = pt->sem_arr_rank(varname, rank, str = sc->GetStroka());    //у Миши используется, а у меня нет, поэтому хз надо ли
+			if (fl == true){
+				system("pause");
+				exit(0);
 			}
+			//if (fl == false){
+				//У ОПИСАНИИ ТОГДА РАССКОМЕНТИРОВАТЬ ДЛЯ N
+				for (int i = 0; i<rank; i++){
+					if (VarHg[i] > VarTree->n->hg[i]){
+						std::cout << "Размер массива превышен в строке " << sc->GetStroka() << std::endl;
+						system("pause");
+						exit(0);
+						//std::cout << "Размер массива превышен в строке " << (sc->lines[sc->GetUK()]) << std::endl; throw 0;
+					}
+					if (i > 0) dif *= VarTree->n->hg[i - 1];
+					dif += VarHg[i];
+				}
+			//}
 		}
-
 
 
 		//pt->sem_arr_rank(varname,rank,str=sc->GetStroka());///////////////////////////////////
@@ -462,30 +471,35 @@ void TDiagram::PR(){
 		int VyrType;
 		TVal VyrVal;
 		V(&VyrType, &VyrVal);
-		if (flagInt){
-			if (VarTree->n->type == TypeInt){
-				if (VyrType == TypeInt){
-					(VarTree->n->value + dif)->datAsInt = VyrVal.datAsInt;
-					std::cout << (VarTree->n->id) << "[" << dif << "] = " << (VyrVal.datAsInt) << std::endl;
+		if (fl == false){
+			if (flagInt){
+				if (VarTree->n->type == TypeInt){
+					if (VyrType == TypeInt){
+						(VarTree->n->value + dif)->datAsInt = VyrVal.datAsInt;
+						std::cout << (VarTree->n->id) << "[" << dif << "] = " << (VyrVal.datAsInt) << std::endl;
+					}
+					else if (VyrType == TypeDouble){
+						(VarTree->n->value + dif)->datAsInt = VyrVal.datAsDouble;
+						std::cout << (VarTree->n->id) << "[" << dif << "] = " << (VyrVal.datAsDouble) << std::endl;
+					}
 				}
-				else if (VyrType == TypeDouble){
-					(VarTree->n->value + dif)->datAsInt = VyrVal.datAsDouble;
-					std::cout << (VarTree->n->id) << "[" << dif << "] = " << (VyrVal.datAsDouble) << std::endl;
-				}
-			}
-			else if (VarTree->n->type == TypeDouble){
-				if (VyrType == TypeInt){
-					(VarTree->n->value + dif)->datAsDouble = VyrVal.datAsInt;
-					std::cout << (VarTree->n->id) << "[" << dif << "] = " << (VyrVal.datAsInt) << std::endl;
-				}
-				else if (VyrType == TypeDouble){
-					(VarTree->n->value + dif)->datAsDouble = VyrVal.datAsDouble;
-					std::cout << (VarTree->n->id) << "[" << dif << "] = " << (VyrVal.datAsDouble) << std::endl;
+				else if (VarTree->n->type == TypeDouble){
+					if (VyrType == TypeInt){
+						(VarTree->n->value + dif)->datAsDouble = VyrVal.datAsInt;
+						std::cout << (VarTree->n->id) << "[" << dif << "] = " << (VyrVal.datAsInt) << std::endl;
+					}
+					else if (VyrType == TypeDouble){
+						(VarTree->n->value + dif)->datAsDouble = VyrVal.datAsDouble;
+						std::cout << (VarTree->n->id) << "[" << dif << "] = " << (VyrVal.datAsDouble) << std::endl;
+					}
 				}
 			}
 		}
 	}
 	else {
+		bool fl;
+		if (flagInt)
+			fl = pt->sem_arr_rank(varname, rank, str = sc->GetStroka());
 		sc->PutUK(uk1);
 		sc->PutStroka(str);
 		t = sc->Scaner(l);
@@ -493,25 +507,27 @@ void TDiagram::PR(){
 		int VyrType;
 		TVal VyrVal;
 		V(&VyrType, &VyrVal);
-		if (flagInt){
-			if (VarTree->n->type == TypeInt){
-				if (VyrType == TypeInt){
-					(VarTree->n->value)->datAsInt = VyrVal.datAsInt;
-					std::cout << (VarTree->n->id) << " = " << (VyrVal.datAsInt) << std::endl;
+		if (fl == false){
+			if (flagInt){
+				if (VarTree->n->type == TypeInt){
+					if (VyrType == TypeInt){
+						(VarTree->n->value)->datAsInt = VyrVal.datAsInt;
+						std::cout << (VarTree->n->id) << " = " << (VyrVal.datAsInt) << std::endl;
+					}
+					else if (VyrType == TypeDouble){
+						(VarTree->n->value)->datAsInt = VyrVal.datAsDouble;
+						std::cout << (VarTree->n->id) << " = " << (VyrVal.datAsDouble) << std::endl;
+					}
 				}
-				else if (VyrType == TypeDouble){
-					(VarTree->n->value)->datAsInt = VyrVal.datAsDouble;
-					std::cout << (VarTree->n->id) << " = " << (VyrVal.datAsDouble) << std::endl;
-				}
-			}
-			else if (VarTree->n->type == TypeDouble){
-				if (VyrType == TypeInt){
-					(VarTree->n->value)->datAsDouble = VyrVal.datAsInt;
-					std::cout << (VarTree->n->id) << " = " << (VyrVal.datAsInt) << std::endl;
-				}
-				else if (VyrType == TypeDouble){
-					(VarTree->n->value)->datAsDouble = VyrVal.datAsDouble;
-					std::cout << (VarTree->n->id) << " = " << (VyrVal.datAsDouble) << std::endl;
+				else if (VarTree->n->type == TypeDouble){
+					if (VyrType == TypeInt){
+						(VarTree->n->value)->datAsDouble = VyrVal.datAsInt;
+						std::cout << (VarTree->n->id) << " = " << (VyrVal.datAsInt) << std::endl;
+					}
+					else if (VyrType == TypeDouble){
+						(VarTree->n->value)->datAsDouble = VyrVal.datAsDouble;
+						std::cout << (VarTree->n->id) << " = " << (VyrVal.datAsDouble) << std::endl;
+					}
 				}
 			}
 		}
@@ -904,8 +920,13 @@ void TDiagram::V3(int *type, TVal *value){
 
 	if (t==TIdent) 
 	{
+		int fl2;
 		strcpy(varname, l);
-		if (flagInt) pt->sem_var_declared(l, str = sc->GetStroka());
+		if (flagInt) fl2 = pt->sem_var_declared(l, str = sc->GetStroka());
+		if (fl2 == false) {
+			system("pause");
+			exit(0);
+		}
 		///////////////// пока вставила сюда
 		tree *VarTree;
 		if (flagInt) VarTree = pt->find_up(varname);
@@ -1050,6 +1071,7 @@ void TDiagram::V3(int *type, TVal *value){
 			}
 		}
 
+
 		if (flagInt){
 			if (VarTree->n->type == TypeInt){
 				*type = TypeInt;
@@ -1060,6 +1082,7 @@ void TDiagram::V3(int *type, TVal *value){
 				if (flagInt) value->datAsDouble = (VarTree->n->value)->datAsDouble;
 			}
 		}
+
 		////////////////////////////////////////////////////
 		}
 	}
