@@ -1,0 +1,16 @@
+	int a,b;
+		int a,b;
+
+void main (){
+	int a,b;
+	{double a,c,d,rrr;}{double a,c,d;{double a,c,d;}}{double a,c,d;} rr=2-rrr;
+	a = d;
+	double cvbvn;
+	typedef double c[4][5]; 
+	c sss; 
+	sss[4][5][4][5][4][5][4][5]=1;
+	{int x,c,d;}
+	 c[4][5][4][5][4][5][4][5][4][5][4][5] = 2;
+	{int x,c,d;d=y;}
+	x = a;
+}

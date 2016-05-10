@@ -1,0 +1,7 @@
+int asd = 100;
+double popi = asd * 3 / 5;
+int q;
+void main(){
+	int w;
+	q = asd * popi;
+}
